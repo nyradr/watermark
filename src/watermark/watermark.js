@@ -20,10 +20,35 @@ export class Watermark extends React.Component {
             'pdf_b64': ''
         };
 
+        this.build_default_pdf();
+
         this.handle_file_upload = this.handle_file_upload.bind(this);
     }
 
+    /**
+     * Build a by default pdf to show the watermarks
+     */
+    async build_default_pdf() {
+        const pdf = await PDFDocument.create()
 
+        const page = pdf.addPage()
+        const { width, height } = page.getSize()
+        const fontSize = 30
+        
+
+        const pdfBytes = await pdf.save()
+        this.setState({
+            pdf: pdf
+        });
+
+        this.on_pdf_change();
+    }
+
+
+    /**
+     * Is called when a pdf file is uploaded by the user
+     * @param {*} file 
+     */
     async handle_file_upload(file){
         const pdf = await PDFDocument.load(file)
         
@@ -34,24 +59,35 @@ export class Watermark extends React.Component {
         this.on_pdf_change();
     }
 
+    /**
+     * To call every time the pdf state value is changed (makes the rendering)
+     */
     async on_pdf_change() {
-        const pdf_b64 = await this.state.pdf.saveAsBase64({ dataUri: true });
+        if (this.state.pdf != null) {
+            const pdf_b64 = await this.state.pdf.saveAsBase64({ dataUri: true });
         
-        this.setState({
-            'pdf_b64': pdf_b64
-        });
+            this.setState({
+                'pdf_b64': pdf_b64
+            });
+        } else {
+            this.setState({
+                'pdf_b64': ''
+            });
+        }
+
+        
     }
 
     render() {
         return (
-            <Container fluid>
+            <div class="vw-100 vh-100 bg-light">
                 <Control onFileUplad = { this.handle_file_upload } ></Control>
                 { this.state.pdf != null &&
                   <Display pdf={ this.state.pdf_b64 }></Display>
                 }
 
                 
-            </Container>
+            </div>
         );  
     }
 }

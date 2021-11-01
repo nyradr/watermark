@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Form } from 'react-bootstrap';
 
 /**
  * Control panel to upload the pdf, set the parameter and download the result
@@ -27,8 +27,15 @@ export class Control extends React.Component {
     render() {
         return (
             <Container>
-                <input type="file" name="file" onChange={this.handle_upload}></input>
-                <button class="btn-primary" onClick={this.handle_upload}>Upload</button>
+                <Form>
+                    <Form.Group>
+                        <Form.Label>PDF Document to watermark</Form.Label>
+                        <Form.Control type="file" onChange={this.handle_upload}></Form.Control>
+                        <Form.Text className="text-muted">
+                            The PDF document will not leave your computer.
+                        </Form.Text>
+                    </Form.Group>
+                </Form>
             </Container>
         );
     }

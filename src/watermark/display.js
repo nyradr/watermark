@@ -8,7 +8,9 @@ export class Display extends React.Component{
 
     render() {
         return (
-            <iframe src={this.props.pdf }></iframe>
+            <div class="container fluid w-100 h-100">
+                <iframe class="w-100 h-100" src={ this.props.pdf }></iframe>
+            </div>
         );
     }
 }
