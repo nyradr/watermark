@@ -1,3 +1,4 @@
+import { Button } from 'bootstrap';
 import React from 'react';
 import { Container, Form } from 'react-bootstrap';
 import { WLine } from './wline';
@@ -19,15 +20,22 @@ export class Control extends React.Component {
         var fr=new FileReader();
         
         fr.onload = async (e) => {
-            this.props.onFileUplad(e.target.result)
+            this.props.on_file_uplad(e.target.result)
         }
               
         fr.readAsArrayBuffer(event.target.files[0]);
     }
 
     render() {
+        const lines = this.props.lines.map((line) => 
+            <WLine text={line.text}
+                   on_text_change={this.props.on_change_text}
+            ></WLine>
+        );
+
+
         return (
-            <Form>
+            <div class="d-flex flex-column">
                 <Form.Group>
                     <Form.Label>PDF Document to watermark</Form.Label>
                     <Form.Control type="file" onChange={this.handle_upload}></Form.Control>
@@ -36,8 +44,14 @@ export class Control extends React.Component {
                     </Form.Text>
                 </Form.Group>
 
-                <WLine on_text_change={ this.props.on_change_text }></WLine>
-            </Form>
+                <div class="d-flex flex-row justify-content-end">
+                    <button class="btn btn-primary btn-sm" onClick={this.props.on_new_line}>Add</button>
+                </div>
+
+                <div>
+                    {lines}
+                </div>
+            </div>
         );
     }
 }

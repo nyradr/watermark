@@ -16,14 +16,19 @@ export class Watermark extends React.Component {
         super(props);
 
         this.state = {
-            'pdf': null,
-            'pdf_b64': '',
-            'text': 'Example'
+            pdf: null,
+            pdf_b64: '',
+            text: 'Example',
+            lines: [
+                {text: 'Example'}
+            ]
         };
 
         this.build_default_pdf();
 
         this.handle_file_upload = this.handle_file_upload.bind(this);
+        this.handle_new_line = this.handle_new_line.bind(this);
+
         this.handle_change_text = this.handle_change_text.bind(this);
     }
 
@@ -40,7 +45,7 @@ export class Watermark extends React.Component {
 
         const pdfBytes = await pdf.save()
         this.setState({
-            pdf: pdf
+            pdf: pdf,
         });
 
         this.on_pdf_change();
@@ -61,10 +66,18 @@ export class Watermark extends React.Component {
         this.on_pdf_change();
     }
 
+    handle_new_line() {
+        this.setState({
+            lines: this.state.lines.concat([{
+                text: 'Example'
+            }])
+        })
+    }
+
     handle_change_text(text) {
         this.setState({
             'text': text
-        })
+        });
     }
 
     /**
@@ -90,7 +103,12 @@ export class Watermark extends React.Component {
                 <div class="row h-100">
                     <div class="col-md-3 h-100">
                         <div class="m-2">
-                           <Control onFileUplad = { this.handle_file_upload } on_change_text = { this.handle_change_text }></Control>
+                           <Control lines = { this.state.lines }
+                                    on_file_uplad = { this.handle_file_upload }
+                                    on_new_line = { this.handle_new_line }
+
+                                    on_change_text = { this.handle_change_text }
+                            ></Control>
                         </div>                        
                     </div>
                     <div class="col-md-9 h-100">
