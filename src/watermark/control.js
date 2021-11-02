@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Form } from 'react-bootstrap';
+import { WLine } from './wline';
 
 /**
  * Control panel to upload the pdf, set the parameter and download the result
@@ -26,17 +27,17 @@ export class Control extends React.Component {
 
     render() {
         return (
-            <Container>
-                <Form>
-                    <Form.Group>
-                        <Form.Label>PDF Document to watermark</Form.Label>
-                        <Form.Control type="file" onChange={this.handle_upload}></Form.Control>
-                        <Form.Text className="text-muted">
-                            The PDF document will not leave your computer.
-                        </Form.Text>
-                    </Form.Group>
-                </Form>
-            </Container>
+            <Form>
+                <Form.Group>
+                    <Form.Label>PDF Document to watermark</Form.Label>
+                    <Form.Control type="file" onChange={this.handle_upload}></Form.Control>
+                    <Form.Text className="text-muted">
+                        The PDF document will not leave your computer.
+                    </Form.Text>
+                </Form.Group>
+
+                <WLine on_text_change={ this.props.on_change_text }></WLine>
+            </Form>
         );
     }
 }

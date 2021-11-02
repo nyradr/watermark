@@ -17,12 +17,14 @@ export class Watermark extends React.Component {
 
         this.state = {
             'pdf': null,
-            'pdf_b64': ''
+            'pdf_b64': '',
+            'text': 'Example'
         };
 
         this.build_default_pdf();
 
         this.handle_file_upload = this.handle_file_upload.bind(this);
+        this.handle_change_text = this.handle_change_text.bind(this);
     }
 
     /**
@@ -59,6 +61,12 @@ export class Watermark extends React.Component {
         this.on_pdf_change();
     }
 
+    handle_change_text(text) {
+        this.setState({
+            'text': text
+        })
+    }
+
     /**
      * To call every time the pdf state value is changed (makes the rendering)
      */
@@ -73,20 +81,24 @@ export class Watermark extends React.Component {
             this.setState({
                 'pdf_b64': ''
             });
-        }
-
-        
+        }   
     }
 
     render() {
         return (
             <div class="vw-100 vh-100 bg-light">
-                <Control onFileUplad = { this.handle_file_upload } ></Control>
-                { this.state.pdf != null &&
-                  <Display pdf={ this.state.pdf_b64 }></Display>
-                }
-
-                
+                <div class="row h-100">
+                    <div class="col-md-3 h-100">
+                        <div class="m-2">
+                           <Control onFileUplad = { this.handle_file_upload } on_change_text = { this.handle_change_text }></Control>
+                        </div>                        
+                    </div>
+                    <div class="col-md-9 h-100">
+                        { this.state.pdf != null &&
+                        <Display pdf={ this.state.pdf_b64 }></Display>
+                        }
+                    </div>
+                </div>
             </div>
         );  
     }
