@@ -28,24 +28,28 @@ export class Control extends React.Component {
 
     render() {
         const lines = this.props.lines.map((line) => 
-            <WLine text={line.text}
-                   on_text_change={this.props.on_change_text}
+            <WLine line={line}
+                   on_delete={ this.props.on_line_delete }
+                   on_change={ this.props.on_line_change }
             ></WLine>
         );
+
+        console.log("RENDER")
+        console.log(lines)
 
 
         return (
             <div class="d-flex flex-column">
                 <Form.Group>
                     <Form.Label>PDF Document to watermark</Form.Label>
-                    <Form.Control type="file" onChange={this.handle_upload}></Form.Control>
+                    <Form.Control type="file" onChange={ this.handle_upload }></Form.Control>
                     <Form.Text className="text-muted">
                         The PDF document will not leave your computer.
                     </Form.Text>
                 </Form.Group>
 
                 <div class="d-flex flex-row justify-content-end">
-                    <button class="btn btn-primary btn-sm" onClick={this.props.on_new_line}>Add</button>
+                    <button class="btn btn-primary btn-sm" onClick={ this.props.on_line_new }>Add</button>
                 </div>
 
                 <div>

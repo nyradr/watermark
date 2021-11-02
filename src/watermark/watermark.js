@@ -19,17 +19,21 @@ export class Watermark extends React.Component {
             pdf: null,
             pdf_b64: '',
             text: 'Example',
+            lines_id: 1,
             lines: [
-                {text: 'Example'}
+                {
+                    id: 0,
+                    text: 'Example'
+                }
             ]
         };
 
         this.build_default_pdf();
 
         this.handle_file_upload = this.handle_file_upload.bind(this);
-        this.handle_new_line = this.handle_new_line.bind(this);
-
-        this.handle_change_text = this.handle_change_text.bind(this);
+        this.handle_line_new = this.handle_line_new.bind(this);
+        this.handle_line_delete = this.handle_line_delete.bind(this);
+        this.handle_line_change = this.handle_line_change.bind(this);
     }
 
     /**
@@ -66,18 +70,46 @@ export class Watermark extends React.Component {
         this.on_pdf_change();
     }
 
-    handle_new_line() {
+    /**
+     * Handle the control callback asking to create a new line
+     */
+    handle_line_new() {
         this.setState({
+            lines_id: this.state.lines_id +1,
             lines: this.state.lines.concat([{
+                id: this.state.lines_id,
                 text: 'Example'
             }])
-        })
+        });
+
+        console.log(this.state.lines)
     }
 
-    handle_change_text(text) {
+    /**
+     * Handle the control callback asking to delete a line
+     */
+    handle_line_delete(id) {
         this.setState({
-            'text': text
+            lines: this.state.lines.filter(line => line.id != id)
         });
+    }
+
+    /** Handle the change in a line parameter */
+    handle_line_change(id, text){
+        console.log(this.state.lines)
+        
+        this.setState({
+            lines: this.state.lines.map(line => {
+                if (line.id == id){
+                    return {
+                        id: id,
+                        text: text
+                    }
+                } else {
+                    return line
+                }
+            })
+        })
     }
 
     /**
@@ -105,9 +137,9 @@ export class Watermark extends React.Component {
                         <div class="m-2">
                            <Control lines = { this.state.lines }
                                     on_file_uplad = { this.handle_file_upload }
-                                    on_new_line = { this.handle_new_line }
-
-                                    on_change_text = { this.handle_change_text }
+                                    on_line_new = { this.handle_line_new }
+                                    on_line_delete = { this.handle_line_delete }
+                                    on_line_change = { this.handle_line_change }
                             ></Control>
                         </div>                        
                     </div>
