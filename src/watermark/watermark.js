@@ -5,6 +5,13 @@ import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Display } from "./display.js";
 import { Container } from "react-bootstrap";
 
+const default_lines = [
+    {
+        id: 0,
+        text: 'Example'
+    }
+];
+
 /**
  * Upload the pdf file
  * Set the text to be writen on it
@@ -18,14 +25,8 @@ export class Watermark extends React.Component {
         this.state = {
             pdf: null,
             pdf_b64: '',
-            text: 'Example',
             lines_id: 1,
-            lines: [
-                {
-                    id: 0,
-                    text: 'Example'
-                }
-            ]
+            lines: default_lines
         };
 
         this.build_default_pdf();
@@ -76,28 +77,33 @@ export class Watermark extends React.Component {
     handle_line_new() {
         this.setState({
             lines_id: this.state.lines_id +1,
-            lines: this.state.lines.concat([{
-                id: this.state.lines_id,
-                text: 'Example'
-            }])
+            lines: this.state.lines.concat(default_lines)
         });
 
-        console.log(this.state.lines)
+        this.on_pdf_change();
     }
 
     /**
      * Handle the control callback asking to delete a line
      */
     handle_line_delete(id) {
-        this.setState({
-            lines: this.state.lines.filter(line => line.id != id)
-        });
+        const lines = this.state.lines.filter(line => line.id != id);
+
+        if (lines.length == 0) {
+            this.setState({
+                lines: default_lines
+            });
+        } else {
+            this.setState({
+                lines: lines
+            })
+        }
+        
+        this.on_pdf_change()
     }
 
     /** Handle the change in a line parameter */
     handle_line_change(id, text){
-        console.log(this.state.lines)
-        
         this.setState({
             lines: this.state.lines.map(line => {
                 if (line.id == id){
@@ -110,6 +116,8 @@ export class Watermark extends React.Component {
                 }
             })
         })
+
+        this.on_pdf_change()
     }
 
     /**
