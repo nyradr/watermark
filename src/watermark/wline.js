@@ -30,9 +30,6 @@ export class WLine extends React.Component {
     }
 
     render() {
-        console.log("WL")
-        console.log(this.props.line)
-
         return (
             <div class="d-flex flex-row w-100 mt-2">
                 <div>
