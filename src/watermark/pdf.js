@@ -6,26 +6,28 @@ import { getTextWidth } from 'get-text-width';
  * @returns 
  */
 function get_line_hbox(line) {
-    const h = line.size
-    const w = 0.6 * line.text.length * line.size;
+    const height = line.size
+    const width = 0.6 * line.text.length * line.size;
 
     return {
-        h: h,
-        w: w,
+        height: height,
+        width: width,
     }
 }
 
 function draw_lines(page, x, y, lines, font) {
     const spacing = 5;
+
+    var prev_hbox = {
+        height: 0,
+        width: 0
+    }
     var y_line = y;
 
     for (const line of lines) {
         const hb = get_line_hbox(line);
-        const x_line = x - (hb.w / 2);
-
-        console.log(line);
-        console.log(x_line);
-        console.log(y_line);
+        const x_line = x - (hb.width / 2);
+        y_line = y_line - (prev_hbox.height / 2) - (hb.height / 2);
         
         page.drawText(line.text, {
             x: x_line,
@@ -36,13 +38,13 @@ function draw_lines(page, x, y, lines, font) {
 
         page.drawRectangle({
             x: x_line,
-            y: y_line,
-            width: hb.w,
-            height: hb.h,
+            y: y_line - (hb.height * 0.25),
+            width: hb.width,
+            height: hb.height,
             opacity: 0.1,
         })
 
-        y_line = y_line - (hb.h + spacing);
+        prev_hbox = hb;
     }
 }
 
@@ -57,7 +59,10 @@ function draw_lines(page, x, y, lines, font) {
 function draw_on_page(page, lines, font) {
     console.log(lines);
 
-    draw_lines(page, 200, 800, lines, font);
+    const page_width = page.getWidth()
+    const page_height = page.getHeight();
+
+    draw_lines(page, page_width / 2, page_height / 2, lines, font);
 }
 
 export function watermark_document(pdf, lines, font) {

@@ -6,10 +6,12 @@ export class WLine extends React.Component {
         super(props);
 
         this.state = {
-            text: this.props.line.text
+            text: this.props.line.text,
+            size: this.props.line.size
         };
 
         this.handle_text_change = this.handle_text_change.bind(this);
+        this.handle_size_change = this.handle_size_change.bind(this);
         this.handle_delete = this.handle_delete.bind(this);
     }
 
@@ -21,7 +23,18 @@ export class WLine extends React.Component {
             text: text
         });
 
-        this.props.on_change(this.props.line.id, text);
+        this.props.on_change(this.props.line.id, text, this.state.size);
+    }
+
+    handle_size_change(event) {
+        event.preventDefault();
+
+        const size = parseInt(event.target.value);
+        this.setState({
+            size: size
+        });
+
+        this.props.on_change(this.props.line.id, this.state.text, size);
     }
 
     handle_delete(event) {
@@ -36,6 +49,13 @@ export class WLine extends React.Component {
                     <Form.Group>
                         <Form.Label>Watermark text</Form.Label>
                         <Form.Control type="text" value={this.props.line.text}  onChange={ this.handle_text_change }></Form.Control>
+                    </Form.Group>
+                </div>
+
+                <div>
+                   <Form.Group>
+                        <Form.Label>Font size</Form.Label>
+                        <Form.Control type="number" min="8" max="72" value={this.props.line.size} onChange={ this.handle_size_change }></Form.Control>
                     </Form.Group>
                 </div>
 

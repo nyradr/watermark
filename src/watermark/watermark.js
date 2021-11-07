@@ -122,14 +122,14 @@ export class Watermark extends React.Component {
     }
 
     /** Handle the change in a line parameter */
-    handle_line_change(id, text){
+    handle_line_change(id, text, size){
         this.setState({
             lines: this.state.lines.map(line => {
                 if (line.id == id){
                     return {
                         id: id,
                         text: text,
-                        size: line.size
+                        size: size
                     }
                 } else {
                     return line
