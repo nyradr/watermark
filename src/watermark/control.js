@@ -2,6 +2,7 @@ import { Button } from 'bootstrap';
 import React from 'react';
 import { Container, Form } from 'react-bootstrap';
 import { WLine } from './wline';
+import { WRepet } from './wrepet';
 
 /**
  * Control panel to upload the pdf, set the parameter and download the result
@@ -43,6 +44,11 @@ export class Control extends React.Component {
                         The PDF document will not leave your computer.
                     </Form.Text>
                 </Form.Group>
+
+                
+                <WRepet repets = { this.props.repets }
+                        on_change = { this.props.on_repet_change }
+                ></WRepet>
 
                 <div class="d-flex flex-row justify-content-end">
                     <button class="btn btn-link btn-sm" onClick={ this.props.on_line_new }>

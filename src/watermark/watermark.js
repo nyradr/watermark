@@ -26,6 +26,7 @@ export class Watermark extends React.Component {
             pdf: null,
             pdf_original: '',
             pdf_b64: '',
+            repets: 1,
             lines_id: 1,
             lines: [{
                 id: default_line.id,
@@ -37,6 +38,8 @@ export class Watermark extends React.Component {
         this.build_default_pdf();
 
         this.handle_file_upload = this.handle_file_upload.bind(this);
+        this.handle_repet_change = this.handle_repet_change.bind(this);
+
         this.handle_line_new = this.handle_line_new.bind(this);
         this.handle_line_delete = this.handle_line_delete.bind(this);
         this.handle_line_change = this.handle_line_change.bind(this);
@@ -71,6 +74,12 @@ export class Watermark extends React.Component {
         });
 
         this.on_pdf_change();
+    }
+
+    handle_repet_change(repet) {
+        this.setState({
+            repet: repet
+        })
     }
 
     /**
@@ -169,7 +178,10 @@ export class Watermark extends React.Component {
                     <div class="col-md-3 h-100">
                         <div class="m-2">
                            <Control lines = { this.state.lines }
+                                    repets = { this.state.repets }
+                                    
                                     on_file_uplad = { this.handle_file_upload }
+                                    on_repet_change = { this.handle_repet_change }
                                     on_line_new = { this.handle_line_new }
                                     on_line_delete = { this.handle_line_delete }
                                     on_line_change = { this.handle_line_change }

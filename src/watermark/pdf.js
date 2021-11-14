@@ -15,6 +15,37 @@ function get_line_hbox(line) {
     }
 }
 
+/**
+ * Get the hbox used by a set of lines
+ * @param {*} lines 
+ * @returns 
+ */
+function get_lines_hbox(lines) {
+    var height = 0;
+    var width = 0;
+    var uplift = null;
+
+    for (const line of lines) {
+        const hb = get_line_hbox(line);
+
+        if (hb.width > width) {
+            width = hb.width;
+        }
+
+        height += hb.height;
+
+        if (uplift == null) {
+            uplift = hb.height * 0.25;
+        }
+    }
+
+    return {
+        height: height,
+        width: width,
+        uplift: uplift
+    }
+}
+
 function draw_lines(page, x, y, lines, font) {
     const spacing = 5;
 
@@ -36,16 +67,19 @@ function draw_lines(page, x, y, lines, font) {
             size: line.size
         })
 
-        page.drawRectangle({
-            x: x_line,
-            y: y_line - (hb.height * 0.25),
-            width: hb.width,
-            height: hb.height,
-            opacity: 0.1,
-        })
-
         prev_hbox = hb;
     }
+
+    const hb = get_lines_hbox(lines);
+    console.log(hb)
+
+    page.drawRectangle({
+        x: x - (hb.width / 2),
+        y: y - hb.height + hb.uplift,
+        width: hb.width,
+        height: hb.height,
+        opacity: 0.1,
+    });
 }
 
 
