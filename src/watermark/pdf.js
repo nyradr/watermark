@@ -1,13 +1,15 @@
-import { getTextWidth } from 'get-text-width';
+import Jimp from 'jimp';
 
 /**
  * Get the height and width of a line
  * @param {} line 
  * @returns 
  */
-function get_line_hbox(line) {
-    const height = line.size
-    const width = 0.6 * line.text.length * line.size;
+async function get_line_hbox(line) {
+    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
+    
+    const height = Jimp.measureTextHeight(font, line.text, 100);
+    const width = Jimp.measureText(font, line.text);
 
     return {
         height: height,
@@ -20,66 +22,61 @@ function get_line_hbox(line) {
  * @param {*} lines 
  * @returns 
  */
-function get_lines_hbox(lines) {
+async function get_lines_hbox(lines) {
     var height = 0;
     var width = 0;
-    var uplift = null;
 
     for (const line of lines) {
-        const hb = get_line_hbox(line);
+        const hb = await get_line_hbox(line);
 
         if (hb.width > width) {
             width = hb.width;
         }
 
         height += hb.height;
-
-        if (uplift == null) {
-            uplift = hb.height * 0.25;
-        }
     }
 
     return {
         height: height,
-        width: width,
-        uplift: uplift
+        width: width
     }
 }
 
-function draw_lines(page, x, y, lines, font) {
-    const spacing = 5;
+async function img_line(line) {
+    const hb = await get_line_hbox(line);
 
-    var prev_hbox = {
-        height: 0,
-        width: 0
-    }
-    var y_line = y;
+    var img = new Jimp(hb.width, hb.height, 0xAAAAAA);
+
+    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
+    
+    img.print(font, 0, 0, line.text);
+
+    return img;
+}
+
+async function img_lines(lines) {
+    const hb = await get_lines_hbox(lines);
+    
+    var img = new Jimp(hb.width, hb.height, 0xAAAAAA); //TODO: Set a transparent background (colored for debug)
+    
+    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
+    
+    var y = 0;
 
     for (const line of lines) {
-        const hb = get_line_hbox(line);
-        const x_line = x - (hb.width / 2);
-        y_line = y_line - (prev_hbox.height / 2) - (hb.height / 2);
-        
-        page.drawText(line.text, {
-            x: x_line,
-            y: y_line,
-            font: font,
-            size: line.size
-        })
+        const hb_line = await get_line_hbox(line);
 
-        prev_hbox = hb;
+        const x = (hb.width - hb_line.width) / 2
+
+        img.print(font, x, y, {
+            text: line.text
+        });
+
+        y += hb_line.height;
     }
-
-    const hb = get_lines_hbox(lines);
-    console.log(hb)
-
-    page.drawRectangle({
-        x: x - (hb.width / 2),
-        y: y - hb.height + hb.uplift,
-        width: hb.width,
-        height: hb.height,
-        opacity: 0.1,
-    });
+    
+    const img_b64 = await img.getBase64Async(Jimp.MIME_PNG);
+    return img_b64
 }
 
 
@@ -90,18 +87,27 @@ function draw_lines(page, x, y, lines, font) {
  *      - Draw on image and merge image with pdf document
  *      - Download the pdf as an image or immutable pdf
  */
-function draw_on_page(page, lines, font) {
+async function draw_on_page(pdf, page, lines) {
     console.log(lines);
 
     const page_width = page.getWidth()
     const page_height = page.getHeight();
 
-    draw_lines(page, page_width / 2, page_height / 2, lines, font);
+    const img = await img_lines(lines);
+
+    const pdf_img = await pdf.embedPng(img);
+
+    page.drawImage(pdf_img, {
+        x: page_width / 2,
+        y: page_height * 0.75
+    })
+
+    return page;
 }
 
-export function watermark_document(pdf, lines, font) {
+export async function watermark_document(pdf, lines) {
     for (var page of pdf.getPages()) {
-        draw_on_page(page, lines, font)
+        await draw_on_page(pdf, page, lines)
     }
 
     return pdf;

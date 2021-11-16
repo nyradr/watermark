@@ -5,11 +5,12 @@ import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Display } from "./display.js";
 import { Container } from "react-bootstrap";
 import { watermark_document } from "./pdf.js";
+import Jimp from 'jimp';
 
 const default_line = {
     id: 0,
     text: 'Example',
-    size: 24
+    size: 16
 };
 
 /**
@@ -90,14 +91,11 @@ export class Watermark extends React.Component {
         var line = default_line;
         line.id = lines_id;
 
-        console.log("EE")
-        console.log(this.state.lines);
         const lines = this.state.lines.concat([{
             id: lines_id,
             text: default_line.text,
             size: default_line.size
         }]);
-        console.log(lines)
 
         this.setState({
             lines_id: lines_id,
@@ -156,8 +154,7 @@ export class Watermark extends React.Component {
         if (this.state.pdf != null) {
             var pdf = await PDFDocument.load(this.state.pdf_original);
             
-            const default_font = await pdf.embedFont(StandardFonts.Courier);  // Note: always use monospace fonts (for size computation)
-            pdf = watermark_document(pdf, this.state.lines, default_font);
+            await watermark_document(pdf, this.state.lines);
 
             const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
         
