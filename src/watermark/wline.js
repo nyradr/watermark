@@ -55,7 +55,16 @@ export class WLine extends React.Component {
                 <div>
                    <Form.Group>
                         <Form.Label>Font size</Form.Label>
-                        <Form.Control type="number" min="8" max="72" value={this.props.line.size} onChange={ this.handle_size_change }></Form.Control>
+                        <Form.Select value={this.props.line.size} onChange={ this.handle_size_change }>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                            <option value="32">32</option>
+                            <option value="64">64</option>
+                            <option value="128">128</option>
+                        </Form.Select>
                     </Form.Group>
                 </div>
 

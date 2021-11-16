@@ -1,12 +1,50 @@
 import Jimp from 'jimp';
 
 /**
+ * Get the bitmap font path for the given fontsize.
+ * @param {number} fontsize Font size 
+ * @param {boolean} bw Black (true, default) or white (false)?
+ */
+function get_font_for_fontsize(fontsize, bw=true) {
+    const font_base = window.location.href +  "/fonts/"; // TODO: add genericity
+
+    const fonts_b = {
+        8: "open-sans-8-black.fnt",
+        10: "open-sans-10-black.fnt",
+        12: "open-sans-12-black.fnt",
+        14: "open-sans-14-black.fnt",
+        16: "open-sans-16-black.fnt",
+        32: "open-sans-32-black.fnt",
+        64: "open-sans-64-black.fnt",
+        128: "open-sans-128-black.fnt",
+    };
+
+    const fonts_w = {
+        8: "open-sans-8-white.fnt",
+        10: "open-sans-10-white.fnt",
+        12: "open-sans-12-white.fnt",
+        14: "open-sans-14-white.fnt",
+        16: "open-sans-16-white.fnt",
+        32: "open-sans-32-white.fnt",
+        64: "open-sans-64-white.fnt",
+        128: "open-sans-128-white.fnt",
+    };
+
+    if (bw){
+        return font_base + fonts_b[fontsize];
+    } else {
+        return font_base + fonts_w[fontsize];
+    }
+}
+
+
+/**
  * Get the height and width of a line
  * @param {} line 
  * @returns 
  */
 async function get_line_hbox(line) {
-    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
+    const font = await Jimp.loadFont(get_font_for_fontsize(line.size));
     
     const height = Jimp.measureTextHeight(font, line.text, 100);
     const width = Jimp.measureText(font, line.text);
@@ -49,15 +87,12 @@ async function get_lines_hbox(lines) {
  */
 async function img_lines(lines) {
     const hb = await get_lines_hbox(lines);
-    
     var img = new Jimp(hb.width, hb.height, 0xAAAAAA); //TODO: Set a transparent background (colored for debug)
-    
-    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
-    
     var y = 0;
 
     for (const line of lines) {
         const hb_line = await get_line_hbox(line);
+        const font = await Jimp.loadFont(get_font_for_fontsize(line.size));
 
         const x = (hb.width - hb_line.width) / 2
 
