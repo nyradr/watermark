@@ -42,18 +42,11 @@ async function get_lines_hbox(lines) {
     }
 }
 
-async function img_line(line) {
-    const hb = await get_line_hbox(line);
-
-    var img = new Jimp(hb.width, hb.height, 0xAAAAAA);
-
-    const font = await Jimp.loadFont(window.location.href + "/fonts/open-sans-16-black.fnt");
-    
-    img.print(font, 0, 0, line.text);
-
-    return img;
-}
-
+/**
+ * Build an image containing the watermark text
+ * @param {*} lines 
+ * @returns 
+ */
 async function img_lines(lines) {
     const hb = await get_lines_hbox(lines);
     
@@ -105,6 +98,12 @@ async function draw_on_page(pdf, page, lines) {
     return page;
 }
 
+/**
+ * Add watermark to the document following the watermark parameters.
+ * @param {*} pdf 
+ * @param {*} lines 
+ * @returns 
+ */
 export async function watermark_document(pdf, lines) {
     for (var page of pdf.getPages()) {
         await draw_on_page(pdf, page, lines)
