@@ -3,9 +3,7 @@ import { Control } from './control.js';
 
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Display } from "./display.js";
-import { Container } from "react-bootstrap";
 import { watermark_document } from "./pdf.js";
-import Jimp from 'jimp';
 
 const default_line = {
     id: 0,
@@ -77,10 +75,12 @@ export class Watermark extends React.Component {
         this.on_pdf_change();
     }
 
-    handle_repet_change(repet) {
+    handle_repet_change(repets) {
         this.setState({
-            repet: repet
-        })
+            repets: repets
+        });
+
+        this.on_pdf_change()
     }
 
     /**
@@ -154,7 +154,7 @@ export class Watermark extends React.Component {
         if (this.state.pdf != null) {
             var pdf = await PDFDocument.load(this.state.pdf_original);
             
-            await watermark_document(pdf, this.state.lines);
+            await watermark_document(pdf, this.state.lines, this.state.repets);
 
             const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
         

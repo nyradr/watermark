@@ -1,4 +1,16 @@
 import Jimp from 'jimp';
+import { PDFDocument, PDFPage } from 'pdf-lib';
+
+function randn_bm() {
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+    while(v === 0) v = Math.random();
+    let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    num = num / 10.0 + 0.5; // Translate to 0 -> 1
+    if (num > 1 || num < 0) return randn_bm() // resample between 0 and 1
+    return num
+  }
+  
 
 /**
  * Get the bitmap font path for the given fontsize.
@@ -81,6 +93,59 @@ async function get_lines_hbox(lines) {
 }
 
 /**
+ * Get the number of instance and spacing to put between watermark instance from a requested number of instances n.
+ * @param {number} w 
+ * @param {number} h 
+ * @param {number} n 
+ * @returns 
+ */
+function get_repets_spacing(w, h, n) {
+    if (n == 1) { // special case that otherwise leads to infinite spacing. Force placement in the middle
+        return {
+            nx: 1,
+            ny: 1,
+            dx: w / 2,
+            dy: h / 2
+        }
+    }
+
+    if (n == 2) { // special case that leads to infinite spacing. Force vertical spacing
+        return {
+            nx: 1,
+            ny: 2,
+            dx: w / 2,
+            dy: h / 3
+        }
+    }
+
+
+    // formulae found here: https://math.stackexchange.com/questions/1039482/how-to-evenly-space-a-number-of-points-in-a-rectangle
+    const nx = Math.ceil(Math.sqrt(
+        ((w / h) * n) +
+        (
+            Math.pow(w - h, 2) /
+            (4 * Math.pow(h, 2))
+        ) -
+        (
+            (w - h) /
+            (2 * h)
+        )
+    ));
+
+    const ny = Math.ceil(n / nx);
+
+    const dx = w / nx;
+    const dy = h / ny;
+
+    return {
+        nx: nx,
+        ny: ny,
+        dx: dx,
+        dy: dy
+    }
+}
+
+/**
  * Build an image containing the watermark text
  * @param {*} lines 
  * @returns 
@@ -103,45 +168,52 @@ async function img_lines(lines) {
         y += hb_line.height;
     }
     
-    const img_b64 = await img.getBase64Async(Jimp.MIME_PNG);
-    return img_b64
+    return img
 }
 
 
 /**
- * Draw watermark on the page
- * Righ now the watermark is only pdf text (therefore copyable and easily removable)
- * TODO: Fix this
- *      - Draw on image and merge image with pdf document
- *      - Download the pdf as an image or immutable pdf
+* Draw watermark on the page
+ * @param {PDFDocument} pdf 
+ * @param {PDFPage} page 
+ * @param {*} lines 
+ * @param {number} repets 
+ * @returns 
  */
-async function draw_on_page(pdf, page, lines) {
-    console.log(lines);
-
+async function draw_on_page(pdf, page, lines, repets) {
     const page_width = page.getWidth()
     const page_height = page.getHeight();
 
     const img = await img_lines(lines);
+    const pdf_img = await pdf.embedPng(await img.getBase64Async(Jimp.MIME_PNG));
 
-    const pdf_img = await pdf.embedPng(img);
+    const spacing = get_repets_spacing(page_width, page_height, repets);
 
-    page.drawImage(pdf_img, {
-        x: page_width / 2,
-        y: page_height * 0.75
-    })
+    for(var nx = 0; nx < spacing.nx; nx++) {
+        for(var ny = 0; ny < spacing.ny; ny++) {
+            const x = nx * spacing.dx + spacing.dx / 2 + (randn_bm() * spacing.dx / 2);
+            const y = ny * spacing.dy + spacing.dy / 2 + (randn_bm() * spacing.dy / 2);
+
+            page.drawImage(pdf_img, {
+                x: x - (img.bitmap.width / 2),
+                y: y - (img.bitmap.height / 2)
+            });
+        }
+    }
 
     return page;
 }
 
 /**
  * Add watermark to the document following the watermark parameters.
- * @param {*} pdf 
+ * @param {PDFDocument} pdf 
  * @param {*} lines 
+ * @param {number} repets Number of times to repet the watermark (min 1)  
  * @returns 
  */
-export async function watermark_document(pdf, lines) {
+export async function watermark_document(pdf, lines, repets) {
     for (var page of pdf.getPages()) {
-        await draw_on_page(pdf, page, lines)
+        await draw_on_page(pdf, page, lines, repets)
     }
 
     return pdf;
