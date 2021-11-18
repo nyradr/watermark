@@ -39,6 +39,7 @@ export class Watermark extends React.Component {
 
         this.handle_file_upload = this.handle_file_upload.bind(this);
         this.handle_repet_change = this.handle_repet_change.bind(this);
+        this.handle_rotation_change = this.handle_rotation_change.bind(this);
 
         this.handle_line_new = this.handle_line_new.bind(this);
         this.handle_line_delete = this.handle_line_delete.bind(this);
@@ -83,6 +84,14 @@ export class Watermark extends React.Component {
     handle_repet_change(repets) {
         this.setState({
             repets: repets
+        }, () => {
+            this.on_pdf_change();
+        });
+    }
+
+    handle_rotation_change(rotation) {
+        this.setState({
+            rotation: rotation
         }, () => {
             this.on_pdf_change();
         });
@@ -183,9 +192,11 @@ export class Watermark extends React.Component {
                         <div class="m-2">
                            <Control lines = { this.state.lines }
                                     repets = { this.state.repets }
+                                    rotation = { this.state.rotation }
                                     
                                     on_file_uplad = { this.handle_file_upload }
                                     on_repet_change = { this.handle_repet_change }
+                                    on_rotation_change = { this.handle_rotation_change }
                                     on_line_new = { this.handle_line_new }
                                     on_line_delete = { this.handle_line_delete }
                                     on_line_change = { this.handle_line_change }
