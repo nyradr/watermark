@@ -54,9 +54,12 @@ export class Watermark extends React.Component {
         this.setState({
             pdf: pdf,
             pdf_original: await pdf.saveAsBase64({ dataUri: true })
+        }, () => {
+            this.on_pdf_change();
         });
 
-        this.on_pdf_change();
+
+        
     }
 
 
@@ -66,21 +69,22 @@ export class Watermark extends React.Component {
      */
     async handle_file_upload(file){
         const pdf = await PDFDocument.load(file)
-        
+        const pdf_original = await pdf.saveAsBase64({ dataUri: true });
+
         this.setState({
             pdf: pdf,
-            pdf_original: await this.state.pdf.saveAsBase64({ dataUri: true })
+            pdf_original: pdf_original
+        }, () => {
+            this.on_pdf_change();
         });
-
-        this.on_pdf_change();
     }
 
     handle_repet_change(repets) {
         this.setState({
             repets: repets
+        }, () => {
+            this.on_pdf_change();
         });
-
-        this.on_pdf_change()
     }
 
     /**
@@ -100,9 +104,9 @@ export class Watermark extends React.Component {
         this.setState({
             lines_id: lines_id,
             lines: lines
+        }, () => {
+            this.on_pdf_change();
         });
-
-        this.on_pdf_change();
     }
 
     /**
@@ -118,14 +122,16 @@ export class Watermark extends React.Component {
                     text: default_line.text,
                     size: default_line.size
                 }]
+            }, () => {
+                this.on_pdf_change();
             });
         } else {
             this.setState({
                 lines: lines
+            }, () => {
+                this.on_pdf_change();
             })
         }
-        
-        this.on_pdf_change()
     }
 
     /** Handle the change in a line parameter */
@@ -142,9 +148,9 @@ export class Watermark extends React.Component {
                     return line
                 }
             })
+        }, () => {
+            this.on_pdf_change();
         })
-
-        this.on_pdf_change()
     }
 
     /**
@@ -157,6 +163,7 @@ export class Watermark extends React.Component {
             await watermark_document(pdf, this.state.lines, this.state.repets);
 
             const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
+            console.log(pdf_b64)
         
             this.setState({
                 'pdf_b64': pdf_b64
