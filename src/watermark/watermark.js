@@ -26,6 +26,7 @@ export class Watermark extends React.Component {
             pdf_original: '',
             pdf_b64: '',
             repets: 1,
+            rotation: 45,
             lines_id: 1,
             lines: [{
                 id: default_line.id,
@@ -160,10 +161,9 @@ export class Watermark extends React.Component {
         if (this.state.pdf != null) {
             var pdf = await PDFDocument.load(this.state.pdf_original);
             
-            await watermark_document(pdf, this.state.lines, this.state.repets);
+            await watermark_document(pdf, this.state.lines, this.state.repets, this.state.rotation);
 
             const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
-            console.log(pdf_b64)
         
             this.setState({
                 'pdf_b64': pdf_b64

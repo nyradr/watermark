@@ -148,9 +148,10 @@ function get_repets_spacing(w, h, n) {
 /**
  * Build an image containing the watermark text
  * @param {*} lines 
+ * @param {number} rotation
  * @returns 
  */
-async function img_lines(lines) {
+async function img_lines(lines, rotation) {
     const hb = await get_lines_hbox(lines);
     var img = new Jimp(hb.width, hb.height, 0x0);
     var y = 0;
@@ -167,6 +168,8 @@ async function img_lines(lines) {
 
         y += hb_line.height;
     }
+
+    img.rotate(rotation, Jimp.RESIZE_BEZIER);
     
     return img
 }
@@ -178,14 +181,12 @@ async function img_lines(lines) {
  * @param {PDFPage} page 
  * @param {*} lines 
  * @param {number} repets 
+ * @param {number} rotation
  * @returns 
  */
-async function draw_on_page(pdf, page, lines, repets) {
+async function draw_on_page(page, repets, img, pdf_img) {
     const page_width = page.getWidth()
     const page_height = page.getHeight();
-
-    const img = await img_lines(lines);
-    const pdf_img = await pdf.embedPng(await img.getBase64Async(Jimp.MIME_PNG));
 
     const spacing = get_repets_spacing(page_width, page_height, repets);
 
@@ -209,11 +210,15 @@ async function draw_on_page(pdf, page, lines, repets) {
  * @param {PDFDocument} pdf 
  * @param {*} lines 
  * @param {number} repets Number of times to repet the watermark (min 1)  
+ * @param {number} rotation Rotation (in deg) of the image. 0 means horizontal with text from left to the right.
  * @returns 
  */
-export async function watermark_document(pdf, lines, repets) {
+export async function watermark_document(pdf, lines, repets, rotation) {
+    const img = await img_lines(lines, rotation);
+    const pdf_img = await pdf.embedPng(await img.getBase64Async(Jimp.MIME_PNG));
+
     for (var page of pdf.getPages()) {
-        await draw_on_page(pdf, page, lines, repets)
+        await draw_on_page(page, repets, img, pdf_img)
     }
 
     return pdf;
