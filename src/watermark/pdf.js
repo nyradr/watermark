@@ -152,7 +152,7 @@ function get_repets_spacing(w, h, n) {
  */
 async function img_lines(lines) {
     const hb = await get_lines_hbox(lines);
-    var img = new Jimp(hb.width, hb.height, 0xAAAAAA); //TODO: Set a transparent background (colored for debug)
+    var img = new Jimp(hb.width, hb.height, 0x0);
     var y = 0;
 
     for (const line of lines) {
