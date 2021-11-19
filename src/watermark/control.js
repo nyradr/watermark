@@ -1,6 +1,7 @@
 import { Button } from 'bootstrap';
 import React from 'react';
 import { Container, Form } from 'react-bootstrap';
+import { Download } from './download';
 import { WLine } from './wline';
 import { WRepet } from './wrepet';
 import { WRotation } from './wrotation';
@@ -69,6 +70,8 @@ export class Control extends React.Component {
                 <div>
                     {lines}
                 </div>
+
+                <Download pdf={ this.props.pdf }></Download>
             </div>
         );
     }
