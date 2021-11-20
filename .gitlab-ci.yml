@@ -7,7 +7,7 @@ pages:
       - node_modules/
   script:
     - npm install
-    - npm run build
+    - npm run build-ci
     - rm -rf public
     - cp build/index.html build/404.html
     - mv build public
