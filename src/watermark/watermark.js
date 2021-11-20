@@ -1,7 +1,7 @@
 import React from "react";
 import { Control } from './control.js';
 
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 import { Display } from "./display.js";
 import { watermark_document } from "./pdf.js";
 
@@ -123,9 +123,9 @@ export class Watermark extends React.Component {
      * Handle the control callback asking to delete a line
      */
     handle_line_delete(id) {
-        const lines = this.state.lines.filter(line => line.id != id);
+        const lines = this.state.lines.filter(line => line.id !== id);
 
-        if (lines.length == 0) {
+        if (lines.length === 0) {
             this.setState({
                 lines: [{
                     id: default_line.id,
@@ -148,7 +148,7 @@ export class Watermark extends React.Component {
     handle_line_change(id, text, size){
         this.setState({
             lines: this.state.lines.map(line => {
-                if (line.id == id){
+                if (line.id === id){
                     return {
                         id: id,
                         text: text,

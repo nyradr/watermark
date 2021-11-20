@@ -1,5 +1,5 @@
 import Jimp from 'jimp';
-import { PDFDocument, PDFPage } from 'pdf-lib';
+//import { PDFDocument, PDFPage } from 'pdf-lib';
 
 function randn_bm() {
     let u = 0, v = 0;
@@ -100,7 +100,7 @@ async function get_lines_hbox(lines) {
  * @returns 
  */
 function get_repets_spacing(w, h, n) {
-    if (n == 1) { // special case that otherwise leads to infinite spacing. Force placement in the middle
+    if (n === 1) { // special case that otherwise leads to infinite spacing. Force placement in the middle
         return {
             nx: 1,
             ny: 1,
@@ -109,7 +109,7 @@ function get_repets_spacing(w, h, n) {
         }
     }
 
-    if (n == 2) { // special case that leads to infinite spacing. Force vertical spacing
+    if (n === 2) { // special case that leads to infinite spacing. Force vertical spacing
         return {
             nx: 1,
             ny: 2,
