@@ -25,7 +25,7 @@ export class Watermark extends React.Component {
             pdf: null,
             pdf_original: '',
             pdf_b64: '',
-            repets: 1,
+            repets: 10,
             rotation: 45,
             lines_id: 1,
             lines: [{
