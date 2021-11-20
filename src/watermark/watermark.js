@@ -52,7 +52,6 @@ export class Watermark extends React.Component {
     async build_default_pdf() {
         const pdf = await PDFDocument.create()
 
-        const page = pdf.addPage()
         this.setState({
             pdf: pdf,
             pdf_original: await pdf.saveAsBase64({ dataUri: true })
