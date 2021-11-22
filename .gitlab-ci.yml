@@ -1,7 +1,7 @@
 image: node
 
-pages:
-  stage: deploy
+build:
+  stage: build
   cache:
     paths:
       - node_modules/
@@ -10,9 +10,15 @@ pages:
     - npm run build-ci
     - rm -rf public
     - cp build/index.html build/404.html
-    - mv build public
   artifacts:
     paths:
-      - public
+      - build
+
+pages:
+  stage: deploy
+  dependencies: 
+    - build
+  script:
+    - mv build public
   only:
     - master

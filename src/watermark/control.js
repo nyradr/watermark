@@ -1,5 +1,4 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import { Download } from './download';
 import { WLine } from './wline';
 import { WRepet } from './wrepet';
