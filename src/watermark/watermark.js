@@ -194,7 +194,7 @@ export class Watermark extends React.Component {
                                     rotation = { this.state.rotation }
                                     pdf = { this.state.pdf_b64 }
                                     
-                                    on_file_uplad = { this.handle_file_upload }
+                                    on_file_upload = { this.handle_file_upload }
                                     on_repet_change = { this.handle_repet_change }
                                     on_rotation_change = { this.handle_rotation_change }
                                     on_line_new = { this.handle_line_new }
