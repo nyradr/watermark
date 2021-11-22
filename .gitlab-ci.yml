@@ -18,6 +18,9 @@ pages:
   stage: deploy
   dependencies: 
     - build
+  artifacts:
+    paths:
+      - public
   script:
     - mv build public
   only:
