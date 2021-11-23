@@ -22,6 +22,7 @@ pages:
     paths:
       - public
   script:
-    - mv build/* public/*
+    - rm -rf build
+    - mv build public
   only:
     - master
