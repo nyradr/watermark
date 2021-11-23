@@ -23,7 +23,6 @@ export class Watermark extends React.Component {
 
         this.state = {
             pdf: null,
-            pdf_original: '',
             pdf_b64: '',
             repets: 10,
             rotation: 45,
@@ -53,14 +52,10 @@ export class Watermark extends React.Component {
         const pdf = await PDFDocument.create()
 
         this.setState({
-            pdf: pdf,
-            pdf_original: await pdf.saveAsBase64({ dataUri: true })
+            pdf: await pdf.saveAsBase64({ dataUri: true }),
         }, () => {
             this.on_pdf_change();
-        });
-
-
-        
+        });        
     }
 
 
@@ -69,15 +64,22 @@ export class Watermark extends React.Component {
      * @param {*} file 
      */
     async handle_file_upload(file){
-        const pdf = await PDFDocument.load(file)
-        const pdf_original = await pdf.saveAsBase64({ dataUri: true });
+        try{
+            const pdf = await PDFDocument.load(file)
+            const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
 
-        this.setState({
-            pdf: pdf,
-            pdf_original: pdf_original
-        }, () => {
-            this.on_pdf_change();
-        });
+            this.setState({
+                pdf: pdf_b64,
+            }, () => {
+                this.on_pdf_change();
+            });
+        } catch (error) {
+            this.setState({
+                pdf: null,
+            }, () => {
+                this.on_pdf_change();
+            });
+        }
     }
 
     handle_repet_change(repets) {
@@ -167,7 +169,7 @@ export class Watermark extends React.Component {
      */
     async on_pdf_change() {
         if (this.state.pdf != null) {
-            var pdf = await PDFDocument.load(this.state.pdf_original);
+            var pdf = await PDFDocument.load(this.state.pdf);
             
             await watermark_document(pdf, this.state.lines, this.state.repets, this.state.rotation);
 
@@ -204,9 +206,7 @@ export class Watermark extends React.Component {
                         </div>                        
                     </div>
                     <div class="col-md-9 h-100">
-                        { this.state.pdf != null &&
                         <Display pdf={ this.state.pdf_b64 }></Display>
-                        }
                     </div>
                 </div>
             </div>
