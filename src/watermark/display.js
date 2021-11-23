@@ -3,7 +3,7 @@ import React from "react";
 
 export class Display extends React.Component{
     render() {
-        if (this.props.pdf.length == 0) {
+        if (this.props.pdf.length === 0) {
             return (
                 <div class="container fluid w-100 h-100">
                     <div class="alert alert-danger mt-5" role="alert">
