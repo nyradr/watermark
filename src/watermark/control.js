@@ -3,6 +3,7 @@ import { Download } from './download';
 import { WLine } from './wline';
 import { WRepet } from './wrepet';
 import { WRotation } from './wrotation';
+import { Wopacity } from './wopacity';
 import { UploadPDF } from './wuploadpdf';
 
 /**
@@ -29,6 +30,10 @@ export class Control extends React.Component {
                 <WRotation rotation = { this.props.rotation }
                            on_change = { this.props.on_rotation_change }
                 ></WRotation>
+
+                <Wopacity value = { this.props.opacity }
+                               on_change = { this.props.on_opacity_change }
+                ></Wopacity>
 
                 <div class="d-flex flex-row justify-content-end">
                     <button class="btn btn-link btn-sm" onClick={ this.props.on_line_new }>

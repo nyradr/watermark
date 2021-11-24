@@ -211,10 +211,16 @@ async function draw_on_page(page, repets, img, pdf_img) {
  * @param {*} lines 
  * @param {number} repets Number of times to repet the watermark (min 1)  
  * @param {number} rotation Rotation (in deg) of the image. 0 means horizontal with text from left to the right.
+ * @param {number} opacity Watermark image opacity
  * @returns 
  */
-export async function watermark_document(pdf, lines, repets, rotation) {
+export async function watermark_document(pdf, lines, repets, rotation, opacity) {
     const img = await img_lines(lines, rotation);
+
+    console.log("O", opacity)
+    img.opacity(opacity);
+
+
     const pdf_img = await pdf.embedPng(await img.getBase64Async(Jimp.MIME_PNG));
 
     for (var page of pdf.getPages()) {
