@@ -26,6 +26,7 @@ export class Watermark extends React.Component {
             pdf_b64: '',
             repets: 10,
             rotation: 45,
+            opacity: 1,
             lines_id: 1,
             lines: [{
                 id: default_line.id,
@@ -39,6 +40,8 @@ export class Watermark extends React.Component {
         this.handle_file_upload = this.handle_file_upload.bind(this);
         this.handle_repet_change = this.handle_repet_change.bind(this);
         this.handle_rotation_change = this.handle_rotation_change.bind(this);
+        this.handle_opacity_change = this.handle_opacity_change.bind(this);
+
 
         this.handle_line_new = this.handle_line_new.bind(this);
         this.handle_line_delete = this.handle_line_delete.bind(this);
@@ -96,6 +99,14 @@ export class Watermark extends React.Component {
         }, () => {
             this.on_pdf_change();
         });
+    }
+
+    handle_opacity_change(opacity) {
+        this.setState({
+            opacity: opacity
+        }, () => {
+            this.on_pdf_change();
+        })
     }
 
     /**
@@ -171,7 +182,7 @@ export class Watermark extends React.Component {
         if (this.state.pdf != null) {
             var pdf = await PDFDocument.load(this.state.pdf);
             
-            await watermark_document(pdf, this.state.lines, this.state.repets, this.state.rotation);
+            await watermark_document(pdf, this.state.lines, this.state.repets, this.state.rotation, this.state.opacity);
 
             const pdf_b64 = await pdf.saveAsBase64({ dataUri: true });
         
@@ -194,11 +205,13 @@ export class Watermark extends React.Component {
                            <Control lines = { this.state.lines }
                                     repets = { this.state.repets }
                                     rotation = { this.state.rotation }
+                                    opacity = { this.state.opacity }
                                     pdf = { this.state.pdf_b64 }
                                     
                                     on_file_upload = { this.handle_file_upload }
                                     on_repet_change = { this.handle_repet_change }
                                     on_rotation_change = { this.handle_rotation_change }
+                                    on_opacity_change = { this.handle_opacity_change }
                                     on_line_new = { this.handle_line_new }
                                     on_line_delete = { this.handle_line_delete }
                                     on_line_change = { this.handle_line_change }
