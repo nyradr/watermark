@@ -1,44 +1,44 @@
 import React from 'react';
-import { Form, OverlayTrigger, Popover } from 'react-bootstrap';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
-/**
- * Handle the PDF upload
- */
-export class UploadPDF extends React.Component {
-    constructor(props){
+
+export class WSlider extends React.Component {
+    constructor(props) {
         super(props);
+    
+        this.state = {
+            value: this.props.value
+        };
 
-        this.handle_upload = this.handle_upload.bind(this);
+        this.handle_value_change = this.handle_value_change.bind(this);
     }
 
-
-    handle_upload(event){
+    handle_value_change(event) {
         event.preventDefault();
 
-        var fr=new FileReader();
-        
-        fr.onload = async (e) => {
-            this.props.on_file_upload(e.target.result)
-        }
-              
-        fr.readAsArrayBuffer(event.target.files[0]);
+        const value = parseInt(event.target.value);
+
+        this.setState({
+            value: value
+        });
+
+        this.props.on_change(value);
     }
 
     render() {
         const helper = (
             <Popover id="popover-basic">
-                <Popover.Header as="h3">File input</Popover.Header>
+                <Popover.Header as="h3">{ this.props.help_title }</Popover.Header>
                 <Popover.Body>
-                    Put here the PDF you wan't to watermark.
-                    The document won't leave your device.
+                    { this.props.help_content }
                 </Popover.Body>
             </Popover>
         );
 
         return (
-           <div class="form-group d-flew flew-column w-100">
-                <div class="d-flex flex-row w-100">
-                    <Form.Label>PDF Document to watermark</Form.Label>
+            <div class="d-flex flex-column w-100">
+                <div class="d-flex flex-row w-100 align-self-center">
+                    <label>{ this.props.text } ({ this.state.value })</label>
 
                     <div class="ms-auto">
                         <OverlayTrigger trigger="hover" placement="auto" overlay={helper}>
@@ -51,11 +51,12 @@ export class UploadPDF extends React.Component {
                         </OverlayTrigger>
                     </div>
                 </div>
-                
-                <Form.Control type="file" accept=".pdf" onChange={ this.handle_upload }></Form.Control>
-                <Form.Text className="text-muted">
-                    The PDF document will not leave your device.
-                </Form.Text>
+
+                <input type="range"
+                       min = { this.props.min } max = { this.props.max } step = { this.props.step }
+                       value = { this.state.value } onChange = { this.handle_value_change }
+                       class="form-range" 
+                ></input>
             </div>
         )
     }

@@ -103,7 +103,7 @@ export class Watermark extends React.Component {
 
     handle_opacity_change(opacity) {
         this.setState({
-            opacity: opacity
+            opacity: opacity / 100
         }, () => {
             this.on_pdf_change();
         })
@@ -205,7 +205,7 @@ export class Watermark extends React.Component {
                            <Control lines = { this.state.lines }
                                     repets = { this.state.repets }
                                     rotation = { this.state.rotation }
-                                    opacity = { this.state.opacity }
+                                    opacity = { this.state.opacity * 100 }
                                     pdf = { this.state.pdf_b64 }
                                     
                                     on_file_upload = { this.handle_file_upload }
