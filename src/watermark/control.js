@@ -20,7 +20,7 @@ export class Control extends React.Component {
         );
 
         return (
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column p-3 w-100">
                 <UploadPDF on_file_upload={ this.props.on_file_upload }></UploadPDF>
                 
                 <WRepet repets = { this.props.repets }
@@ -32,8 +32,8 @@ export class Control extends React.Component {
                 ></WRotation>
 
                 <Wopacity value = { this.props.opacity }
-                               on_change = { this.props.on_opacity_change }
                 ></Wopacity>
+                on_change = { this.props.on_opacity_change }
 
                 <div class="d-flex flex-row justify-content-end">
                     <button class="btn btn-link btn-sm" onClick={ this.props.on_line_new }>
