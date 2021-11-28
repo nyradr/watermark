@@ -159,12 +159,16 @@ async function img_lines(lines, rotation) {
     for (const line of lines) {
         const hb_line = await get_line_hbox(line);
         const font = await Jimp.loadFont(get_font_for_fontsize(line.size));
+        var img_line = new Jimp(hb_line.width, hb_line.height, 0x0);
+
+        img_line.print(font, 0, 0, {
+            text: line.text
+        });
+        img_line.color([{ apply: 'xor', params: [line.color] }]);
 
         const x = (hb.width - hb_line.width) / 2
 
-        img.print(font, x, y, {
-            text: line.text
-        });
+        img.blit(img_line, x, y);
 
         y += hb_line.height;
     }

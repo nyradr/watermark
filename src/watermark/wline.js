@@ -8,11 +8,13 @@ export class WLine extends React.Component {
 
         this.state = {
             text: this.props.line.text,
-            size: this.props.line.size
+            size: this.props.line.size,
+            color: this.props.line.color
         };
 
         this.handle_text_change = this.handle_text_change.bind(this);
         this.handle_size_change = this.handle_size_change.bind(this);
+        this.handle_color_change = this.handle_color_change.bind(this);
         this.handle_delete = this.handle_delete.bind(this);
     }
 
@@ -24,7 +26,7 @@ export class WLine extends React.Component {
             text: text
         });
 
-        this.props.on_change(this.props.line.id, text, this.state.size);
+        this.props.on_change(this.props.line.id, text, this.state.size, this.state.color);
     }
 
     handle_size_change(event) {
@@ -35,7 +37,18 @@ export class WLine extends React.Component {
             size: size
         });
 
-        this.props.on_change(this.props.line.id, this.state.text, size);
+        this.props.on_change(this.props.line.id, this.state.text, size, this.state.color);
+    }
+
+    handle_color_change(event) {
+        event.preventDefault();
+
+        const color = event.target.value;
+        this.setState({
+            color: color
+        });
+
+        this.props.on_change(this.props.line.id, this.state.text, this.state.size, color);
     }
 
     handle_delete(event) {
@@ -62,6 +75,15 @@ export class WLine extends React.Component {
             </Popover>
         );
 
+        const helper_color = (
+            <Popover id="popover-basic">
+                <Popover.Header as="h3">Text color</Popover.Header>
+                <Popover.Body>
+                    Set the text color.
+                </Popover.Body>
+            </Popover>
+        );
+
         return (
             <div class="d-flex flex-row w-100 mt-2">
                 <div>
@@ -78,7 +100,7 @@ export class WLine extends React.Component {
                     </Form.Group>
                 </div>
 
-                <div>
+                <div class="ms-1">
                    <Form.Group>
                         <div class="d-flex flex-row w-100">
                             <Form.Label>Font size</Form.Label>
@@ -98,6 +120,25 @@ export class WLine extends React.Component {
                             <option value="64">64</option>
                             <option value="128">128</option>
                         </Form.Select>
+                    </Form.Group>
+                </div>
+
+                <div class="ms-1">
+                    <Form.Group>
+                        <div class="d-flex flex-row w-100">
+                            <Form.Label>Font color</Form.Label>
+
+                            <div class="ms-1">
+                                <Helper helper = { helper_color }></Helper>
+                            </div>
+                        </div>
+
+                        <Form.Control
+                            type="color"
+                            value={ this.state.color }
+                            onChange={ this.handle_color_change }
+                            title="Set the line text color."
+                        />
                     </Form.Group>
                 </div>
 
