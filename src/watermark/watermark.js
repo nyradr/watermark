@@ -8,7 +8,8 @@ import { watermark_document } from "./pdf.js";
 const default_line = {
     id: 0,
     text: 'Example',
-    size: 16
+    size: 16,
+    color: '0x000000'
 };
 
 /**
@@ -31,7 +32,8 @@ export class Watermark extends React.Component {
             lines: [{
                 id: default_line.id,
                 text: default_line.text,
-                size: default_line.size
+                size: default_line.size,
+                color: default_line.color
             }]
         };
 
@@ -120,7 +122,8 @@ export class Watermark extends React.Component {
         const lines = this.state.lines.concat([{
             id: lines_id,
             text: default_line.text,
-            size: default_line.size
+            size: default_line.size,
+            color: default_line.color
         }]);
 
         this.setState({
@@ -142,7 +145,8 @@ export class Watermark extends React.Component {
                 lines: [{
                     id: default_line.id,
                     text: default_line.text,
-                    size: default_line.size
+                    size: default_line.size,
+                    color: default_line.color
                 }]
             }, () => {
                 this.on_pdf_change();
@@ -157,14 +161,15 @@ export class Watermark extends React.Component {
     }
 
     /** Handle the change in a line parameter */
-    handle_line_change(id, text, size){
+    handle_line_change(id, text, size, color){
         this.setState({
             lines: this.state.lines.map(line => {
                 if (line.id === id){
                     return {
                         id: id,
                         text: text,
-                        size: size
+                        size: size,
+                        color: color
                     }
                 } else {
                     return line
@@ -200,7 +205,7 @@ export class Watermark extends React.Component {
         return (
             <div class="vw-100 vh-100 bg-light">
                 <div class="row h-100">
-                    <div class="col-md-3 h-100">
+                    <div class="col-md-4 h-100">
                         <div class="m-2">
                            <Control lines = { this.state.lines }
                                     repets = { this.state.repets }
@@ -218,7 +223,7 @@ export class Watermark extends React.Component {
                             ></Control>
                         </div>                        
                     </div>
-                    <div class="col-md-9 h-100">
+                    <div class="col-md-8 h-100">
                         <Display pdf={ this.state.pdf_b64 }></Display>
                     </div>
                 </div>
