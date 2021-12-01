@@ -3,6 +3,7 @@ import { Download } from './download';
 import { WLine } from './wline';
 import { UploadPDF } from './wuploadpdf';
 import { WSlider } from './wslider';
+import { KoFi } from '../kofi/kofi';
 
 /**
  * Control panel to upload the pdf, set the parameter and download the result
@@ -68,7 +69,14 @@ export class Control extends React.Component {
                     {lines}
                 </div>
 
-                <Download pdf={ this.props.pdf }></Download>
+                <div class="d-flex flex-row justify-content-center">
+                    <Download pdf={ this.props.pdf }></Download>
+                </div>
+                
+
+                <div class="d-flex flex-row justify-content-center">
+                   <KoFi color="#29ab00" id="V7V177YI2" label="Buy me a Ko-fi" />
+                </div>
             </div>
         );
     }
